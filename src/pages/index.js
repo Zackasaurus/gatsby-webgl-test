@@ -1,22 +1,35 @@
-import React from "react"
-import { Link } from "gatsby"
+import React, { useRef, useEffect } from 'react';
+import Layout from '../components/layout';
+import Image from '../components/image';
+import SEO from '../components/seo';
+import '../index.css';
 
-import Layout from "../components/layout"
-import Image from "../components/image"
-import SEO from "../components/seo"
+import caseStudies from '../videos/select-case-studies.mp4';
+import { setup } from '../components/video-renderer';
+import init from '../webgl';
 
-const IndexPage = () => (
-  <Layout>
-    <SEO title="Home" />
-    <h1>Hi people</h1>
-    <p>Welcome to your new Gatsby site.</p>
-    <p>Now go build something great.</p>
-    <div style={{ maxWidth: `300px`, marginBottom: `1.45rem` }}>
-      <Image />
-    </div>
-    <Link to="/page-2/">Go to page 2</Link> <br />
-    <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
-  </Layout>
-)
+const IndexPage = () => {
+  const videoRef = useRef(null);
+  const mountRef = useRef(null);
+  // webgl
+  useEffect(() => {
+    // const video = videoRef.current;
+    init(videoRef.current);
+    // effect
+    return () => {
+      // cleanup
+    };
+  }, []);
 
-export default IndexPage
+  return (
+    <Layout>
+      <SEO title="Home" />
+      <div className="container" ref={mountRef}>
+        <canvas id="video" ref={videoRef}></canvas>
+        <Image />
+      </div>
+    </Layout>
+  );
+};
+
+export default IndexPage;
