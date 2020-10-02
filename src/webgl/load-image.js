@@ -1,9 +1,9 @@
-const loadImage = () => {
+const loadImage = url => {
   return new Promise((resolve, reject) => {
     try {
       const image = new Image();
       image.crossOrigin = 'anonymous';
-      image.src = 'https://webglfundamentals.org/webgl/resources/leaves.jpg'; // MUST BE SAME DOMAIN!!!
+      image.src = url; // MUST BE SAME DOMAIN!!!
       image.onload = function () {
         resolve(image);
       };

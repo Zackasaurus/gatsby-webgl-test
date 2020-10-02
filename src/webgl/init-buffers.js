@@ -1,38 +1,68 @@
-const initBuffers = (gl, image) => {
-  const sw = [-1.0, -1.0];
-  const se = [-1.0, 1.0];
-  const nw = [1.0, -1.0];
-  const ne = [1.0, 1.0];
-  // const positions = [1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0];
-  // const positions2 = [1.0, 1.0, -1.0, 1.0, 1.0, -1.0, -1.0, -1.0];
-  const positions = [
+const initBuffers = (gl, video) => {
+  // left right
+  const positionsLR = [
+    // 1
+    0.5,
     0.0,
-    0.0,
+    // 2
     1.0,
     0.0,
-    0.0,
+    // 3
+    0.5,
+    1.0,
+    // 4
+    0.5,
+    1.0,
+    // 5
     1.0,
     0.0,
-    1.0,
-    1.0,
-    0.0,
+    // 6
     1.0,
     1.0,
   ];
-  // const positions = [
-  //   -1.0,
-  //   -1.0,
-  //   1.0,
-  //   -1.0,
-  //   -1.0,
-  //   1.0,
-  //   -1.0,
-  //   1.0,
-  //   1.0,
-  //   -1.0,
-  //   1.0,
-  //   1.0,
-  // ];
+
+  const positionsTB = [
+    // 1
+    0.0,
+    0.0,
+    // 2
+    1.0,
+    0.0,
+    // 3
+    0.0,
+    1.0,
+    // 4
+    0.0,
+    1.0,
+    // 5
+    1.0,
+    0.0,
+    // 6
+    1.0,
+    1.0,
+  ];
+
+  const positions = [
+    // 1
+    0.0,
+    0.0,
+    // 2
+    1.0,
+    0.0,
+    // 3
+    0.0,
+    0.5,
+    // 4
+    0.0,
+    0.5,
+    // 5
+    1.0,
+    0.0,
+    // 6
+    1.0,
+    0.5,
+  ];
+
   // Create a buffer for the square's positions.
   const positionBuffer = gl.createBuffer();
 
@@ -41,7 +71,7 @@ const initBuffers = (gl, image) => {
   gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
   // Set a rectangle the same size as the image.
-  setRectangle(gl, 0, 0, image.width, image.height);
+  setRectangle(gl, 0, 0, video.videoWidth, video.videoHeight / 2);
 
   // Now create an array of positions for the square.
 

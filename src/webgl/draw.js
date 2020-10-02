@@ -8,7 +8,18 @@ const draw = (gl, programInfo, buffers) => {
   // Clear the canvas
   gl.clearColor(0, 0, 0, 0);
   gl.clear(gl.COLOR_BUFFER_BIT);
+  // gl.depthMask(false);
+  // gl.disable(gl.DEPTH_TEST);
+  // gl.blendColor(0, 0, 0, 0);
+  // gl.colorMask(true, true, true, false);
 
+  // gl.enable(gl.BLEND);
+  // gl.blendFuncSeparate(
+  //   gl.SRC_ALPHA,
+  //   gl.ONE_MINUS_SRC_ALPHA,
+  //   gl.ONE,
+  //   gl.ONE_MINUS_SRC_ALPHA
+  // );
   gl.useProgram(programInfo.program);
 
   gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);

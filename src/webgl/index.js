@@ -1,16 +1,23 @@
 import initBuffers from './init-buffers';
 import initShaderProgram from './program';
-// import initTexture from './init-texture';
+import { initTexture, updateTexture } from './texture';
 import loadImage from './load-image';
+import loadVideo from './load-video';
 import draw from './draw';
+import scs from '../videos/select-case-studies.mp4';
 
-const main = async video => {
+const main = async ref => {
   // Load image
 
-  const image = await loadImage();
+  const video = await loadVideo(scs);
+  console.log(video.videoHeight);
 
   // Ref
-  const gl = video.getContext('webgl');
+  const gl = ref.getContext('webgl2', {
+    alpha: true,
+    premultipliedAlpha: false, // Ask for non-premultiplied alpha
+    preserveDrawingBuffer: false,
+  });
 
   // If we don't have a GL context, give up now
   if (!gl) {
@@ -19,8 +26,8 @@ const main = async video => {
     );
     return;
   }
-  video.width = image.width;
-  video.height = image.height;
+  ref.width = video.videoWidth;
+  ref.height = video.videoHeight / 2;
 
   // Vertex shader program
   const vsSource = `
@@ -43,7 +50,7 @@ const main = async video => {
         v_texCoord = a_texCoord;
       }
     `;
-
+  // gl_FragColor = texture2D(u_image, v_texCoord);
   // Fragment shader program
   const fsSource = `
       precision mediump float;
@@ -51,7 +58,10 @@ const main = async video => {
       varying vec2 v_texCoord;
   
       void main() {
-          gl_FragColor = texture2D(u_image, v_texCoord);
+          mediump vec3 tColor = texture2D(u_image, v_texCoord).rgb;
+          mediump vec3 aColor = texture2D(u_image, (v_texCoord + vec2(0.0, 0.5))).rgb;
+        
+          gl_FragColor = vec4(tColor, aColor[0]);
       }
     `;
 
@@ -75,24 +85,29 @@ const main = async video => {
   // Step 3
   // Here's where we call the routine that builds all the
   // objects we'll be drawing.
-  const buffers = initBuffers(gl, image);
+  const buffers = initBuffers(gl, video);
 
-  // Create a texture.
-  var texture = gl.createTexture();
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-
-  // Set the parameters so we can render any size image.
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-
-  // Upload the image into the texture.
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+  const texture = initTexture(gl, video);
 
   // Step 4
   // Draw the scene
-  draw(gl, programInfo, buffers);
+  // draw(gl, programInfo, buffers);
+
+  // Draw the scene repeatedly
+  function render() {
+    // now *= 0.001; // convert to seconds
+    // const deltaTime = now - then;
+    // then = now;
+    updateTexture(gl, texture, video);
+
+    draw(gl, programInfo, buffers);
+
+    // requestAnimationFrame(render);
+  }
+  setInterval(() => {
+    render();
+  }, 50);
+  // requestAnimationFrame(render);
 };
 
 export default main;
